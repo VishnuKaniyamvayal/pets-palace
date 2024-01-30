@@ -7,6 +7,7 @@ import Register from './pages/Register'
 import Homepage from "./pages/Homepage"
 import Searchpage from './pages/Searchpage'
 import Cart from './pages/Cart'
+import Productview from './pages/Productview'
 
 function App() {
   return (
@@ -20,6 +21,7 @@ function App() {
             <Route path='/register' element={<Register />} />
             <Route path='/search' element={<Searchpage />} />
             <Route path='/cart' element={<Cart />} />
+            <Route path='/productview/:id' element={<Productview />} />
           </Routes>
         </div>
       </Router>
