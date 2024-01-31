@@ -1,11 +1,13 @@
-import { Button, Card, Flex, Grid, Text } from '@radix-ui/themes';
+import { Box, Button, Card, Flex, Grid, Text, TextArea, TextFieldInput } from '@radix-ui/themes';
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import ReactStars from "react-rating-stars-component";
+import CommentCard from '../components/CommentCard';
+import Footer from '../components/Footer'
 
 const Productview = () => {
 
-    const images = ["https://cdn.pixabay.com/photo/2018/10/01/09/21/pets-3715733_640.jpg", "https://t3.ftcdn.net/jpg/04/81/85/46/360_F_481854656_gHGTnBscKXpFEgVTwAT4DL4NXXNhDKU9.jpg", "https://cdn.pixabay.com/photo/2018/10/01/09/21/pets-3715733_640.jpg"]
+    const images = ["https://cdn.pixabay.com/photo/2018/10/01/09/21/pets-3715733_640.jpg", "https://t3.ftcdn.net/jpg/04/81/85/46/360_F_481854656_gHGTnBscKXpFEgVTwAT4DL4NXXNhDKU9.jpg", "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQYi0S8pxLUemotBw_8SzBFpuo0TeZc72-zpAiGzc_rji_6xfvdTPsImL9BCY9CHOK1L1w&usqp=CAU" , "https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-1490908.jpg&fm=jpg"]
 
     const desc = "The point of using Lorem Ipsum is that it has a more-or-less normal distribution of letters, as opposed to using 'Content here, content here', making it look like readable English. Many desktop publishing packages and web page editors now use Lorem Ipsum as their default model text, and a search for 'lorem ipsum' will uncover many web sites still in their infancy. Various versions have evolved over the years, sometimes by accident,"
 
@@ -57,6 +59,31 @@ const Productview = () => {
                     </Flex>
                 </Card>
             </Grid>
+            <Flex justify={"start"} align="center" direction={"row"} gap="6" style={{margin: "20px 0 10px 0"}}>
+            {
+                images.map(( imageUrl , index )=>
+                    <img onClick={()=>{setCurrentImage(imageUrl)}}  style={{objectFit:"cover" , borderRadius: "10px"}} width={"100px"} height="100px" key={ index } src={imageUrl} alt="PRODUCT IMAGE"/>
+                )
+            }
+            </Flex>
+            <Text weight={"bold"} size="6" align={"left"}>Comments</Text>
+            <Grid columns={"2"} gap="6" style={{margin: "20px 0 10px 0"}}>
+            <Flex justify={"start"} align="left" direction={"column"} gap="6" style={{margin: "20px 0 10px 0"}}>
+            <CommentCard/>
+            <CommentCard/>
+            <CommentCard/>
+            <CommentCard/>
+            <CommentCard/>
+            <CommentCard/>
+            <CommentCard/>
+            </Flex>
+            <Box style={{padding:"10px" , marginTop:"10px"}}>
+                <TextArea size={"3"}  placeholder="Add a comment…" />
+                <Text size={"2"} color='gray' align={"left"} tyle={{float:"right"}} >* You can add comment if only you are a verified customer</Text>
+                <Button style={{marginTop:"10px" , float:"right"}}>Comment</Button>
+            </Box>
+            </Grid>
+            <Footer/>
         </>
     )
 }
