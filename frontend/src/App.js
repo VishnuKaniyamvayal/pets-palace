@@ -15,7 +15,7 @@ function App() {
     <>
       <Router>
         <div className='container'>
-          {/* <Header /> */}
+          <Header />
           <Routes>
             <Route path='/' element={<Homepage/>} />
             <Route path='/login' element={<Login />} />
