@@ -24,6 +24,10 @@ function Dashboard() {
       navigate('/login')
     }
 
+    if (user.admin) {
+      navigate('/admin')
+    }
+
     dispatch(getGoals())
 
     return () => {

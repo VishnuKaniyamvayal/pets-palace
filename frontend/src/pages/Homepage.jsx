@@ -31,6 +31,11 @@ function Homepage(){
       navigate('/login')
     }
 
+    if (user.admin) {
+      navigate('/admin')
+    }
+
+    console.log(user);
     return () => {
       dispatch(reset())
     }

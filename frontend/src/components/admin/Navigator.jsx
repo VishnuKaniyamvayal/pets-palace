@@ -7,7 +7,7 @@ import PetsTable from './PetsTable'
 const Navigator = () => {
     return (
         <div style={{marginTop:"-50px"}}>
-            <Tabs.Root defaultValue="account">
+            <Tabs.Root defaultValue="pets">
                 <Tabs.List>
                     <Tabs.Trigger value="pets">Pets</Tabs.Trigger>
                     <Tabs.Trigger value="orders">Orders</Tabs.Trigger>

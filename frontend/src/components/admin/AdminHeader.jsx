@@ -6,7 +6,7 @@ import Logo from "../../icons/paw-solid.svg"
 import { Button, Text } from '@radix-ui/themes'
 import { TextField } from '@radix-ui/themes'
  
-function Header() {
+function AdminHeader() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
@@ -47,4 +47,4 @@ function Header() {
   )
 }
 
-export default Header
+export default AdminHeader

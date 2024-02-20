@@ -1,13 +1,13 @@
 import React from 'react';
-import Header from "../../components/admin/Header"
 import Navigator from '../../components/admin/Navigator';
+import AdminHeader from '../../components/admin/AdminHeader'
 
 
 const AdminView = () => {
 
   return (
     <>
-        <Header/>
+        <AdminHeader/>
         <Navigator/>
     </>
   );
