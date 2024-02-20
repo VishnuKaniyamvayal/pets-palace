@@ -22,6 +22,10 @@ const petSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    petDesc: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom'
 import { useSelector, useDispatch } from 'react-redux'
 import { logout, reset } from '../features/auth/authSlice'
 import Logo from "../icons/paw-solid.svg"
-import { Button } from '@radix-ui/themes'
+import { Button, Text } from '@radix-ui/themes'
 import { TextField } from '@radix-ui/themes'
  
 function Header() {
@@ -21,7 +21,7 @@ function Header() {
     <header className='header'>
       <div className='logo'>
       <img src={Logo} width={50} height={50} fill="#FFBA18" alt="Logo" />
-        <Link to='/'><h3>Paws Palace</h3></Link>
+        <Link to='/'><h3>Paws Palace { user.admin ? "Admin Pannel" :"" }</h3></Link>
       </div>
       {user ?
       <TextField.Root style={{width:300}} radius='full'>
@@ -34,6 +34,9 @@ function Header() {
       <ul>
         {user ? (
           <>
+          <li>
+            <Text>Hi {user.name}</Text>
+          </li>
           <li>
             <a href="/cart">Cart</a>
           </li>

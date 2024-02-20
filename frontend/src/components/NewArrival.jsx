@@ -33,6 +33,7 @@ const NewArrival = () => {
 
     const productStyle = {
         textAlign: 'center',
+        cursor:"pointer"
     };
 
     const imageStyle = {
@@ -41,16 +42,11 @@ const NewArrival = () => {
         marginBottom: '10px',
     };
 
-    const shopNowButtonStyle = {
-        padding: '10px 20px',
-        backgroundColor: '#ff6f61', // Button background color
-        color: '#fff', // Text color for the button
-        border: 'none',
-        borderRadius: '5px',
-        cursor: 'pointer',
-        fontSize: '1.2em',
-        marginTop: '20px',
+    const buttonStyle = {
+        marginTop:"10px"
     };
+
+
 
     return (
         <div style={newArrivalsStyle}>
@@ -60,6 +56,10 @@ const NewArrival = () => {
                     <div style={productStyle} key={product.id}>
                         <img src={product.imageUrl} alt={product.name} style={imageStyle} />
                         <p>{product.name}</p>
+
+                        <Button
+                        style={buttonStyle}
+                        >Add to cart</Button>
                     </div>
                 ))}
             </div>

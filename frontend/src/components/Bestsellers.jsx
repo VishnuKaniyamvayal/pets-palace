@@ -33,6 +33,7 @@ const BestSellers = () => {
         textAlign: 'center',
         maxWidth: '200px',
         marginBottom: '20px',
+        cursor:"pointer"
     };
 
     const imageStyle = {

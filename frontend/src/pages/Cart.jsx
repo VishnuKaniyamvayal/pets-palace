@@ -64,10 +64,6 @@ const Cart = () => {
             <Text weight={"Light"}>Rs {200}</Text>
           </Flex>
           <Flex direction="row" align={"center"} justify="between" gap="3" style={{ padding: "10px" }}>
-            <Text weight={"bold"} size="5">Coupon Code</Text>
-            <TextFieldInput></TextFieldInput>
-          </Flex>
-          <Flex direction="row" align={"center"} justify="between" gap="3" style={{ padding: "10px" }}>
             <Text weight={"bold"} size="5">Grand Total</Text>
             <Text weight={"Light"}>Rs {200}</Text>
           </Flex>

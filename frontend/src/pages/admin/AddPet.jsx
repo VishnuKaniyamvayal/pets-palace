@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Flex, TextField } from '@radix-ui/themes';
+import { Button, Flex, TextArea, TextField } from '@radix-ui/themes';
 import axios from 'axios';
 import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
@@ -11,6 +11,7 @@ const AddPet = () => {
   const [petAge, setPetAge] = useState('');
   const [petImage, setPetImage] = useState([]);
   const [petBreed, setPetBreed] = useState('');
+  const [petDesc, setPetDesc] = useState('');
 
   const handleImageChange = (e) => {
     const imageFile = e.target.files[0];
@@ -29,7 +30,8 @@ const AddPet = () => {
       formData.append('petBreed', petBreed);
       formData.append('petType', petType);
       formData.append('petAge', petAge);
-      formData.append("image",petImage)
+      formData.append("image",petImage);
+      formData.append("petDesc",petDesc);
       try {
         const response = await axios.post(process.env.REACT_APP_DEV_BASE_URL + 'api/admin/addpet',  formData ,{
           headers: {
@@ -44,13 +46,13 @@ const AddPet = () => {
           console.error('Failed to add pet.');
         }
       } catch (error) {
-        // console.error('Error adding pet:', error);
+        console.error('Error adding pet:', error);
       }
-      // setPetAge("")
-      // setPetBreed("")
-      // setPetImage("")
-      // setPetName("")
-      // setPetType("")
+      setPetAge("")
+      setPetBreed("")
+      setPetImage("")
+      setPetName("")
+      setPetType("")
     }
  };
 
@@ -100,6 +102,10 @@ const AddPet = () => {
           onChange={(e) => setPetBreed(e.target.value)}
         />
       </TextField.Root>
+      <TextArea
+          value={petDesc}
+          onChange={(e) => setPetDesc(e.target.value)}
+        />
 
       <Button
         onClick={handleSubmit}
