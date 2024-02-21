@@ -32,7 +32,7 @@ router.post('/addpet' , upload.any() , async (req, res) => {
     petAge:req.body.petAge,
     petBreed:req.body.petBreed,
     petDesc:req.body.petDesc,
-    petPrice:req.body.petprice,
+    petPrice:req.body.petPrice,
     petImages:[image.filename]
   })
 

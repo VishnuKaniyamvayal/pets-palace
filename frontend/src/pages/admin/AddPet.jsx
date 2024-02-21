@@ -12,6 +12,7 @@ const AddPet = () => {
   const [petImage, setPetImage] = useState([]);
   const [petBreed, setPetBreed] = useState('');
   const [petDesc, setPetDesc] = useState('');
+  const [petPrice, setPetPrice] = useState('');
 
   const handleImageChange = (e) => {
     const imageFile = e.target.files[0];
@@ -32,6 +33,7 @@ const AddPet = () => {
       formData.append('petAge', petAge);
       formData.append("image",petImage);
       formData.append("petDesc",petDesc);
+      formData.append("petPrice",petPrice);
       try {
         const response = await axios.post(process.env.REACT_APP_DEV_BASE_URL + 'api/admin/addpet',  formData ,{
           headers: {
@@ -53,6 +55,7 @@ const AddPet = () => {
       setPetImage("")
       setPetName("")
       setPetType("")
+      setPetPrice("")
     }
  };
 
@@ -100,6 +103,13 @@ const AddPet = () => {
           placeholder="Pet Breed"
           value={petBreed}
           onChange={(e) => setPetBreed(e.target.value)}
+        />
+      </TextField.Root>
+      <TextField.Root>
+        <TextField.Input
+          placeholder="Pet price"
+          value={petPrice}
+          onChange={(e) => setPetPrice(e.target.value)}
         />
       </TextField.Root>
       <TextArea

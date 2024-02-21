@@ -230,34 +230,47 @@ router.post('/addaddress', async (req, res) => {
   
       await newAddress.save();
   
-      res.json({ message: 'Address added successfully', address: newAddress });
+      res.status(200).json({ message: 'Address added successfully', address: newAddress });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
   });
 
-router.put('/editaddress/:addressId', async (req, res) => {
+router.get('/getaddress/:userid', async (req, res) => {
     try {
-      const userId = req.user.userid;
-      const { addressId } = req.params;
+      const userId = req.params.userid;
+
+      const userAddress = await addressModel.findOne({ user: userId }).limit(1);
   
-      const updatedAddress = await addressModel.findOneAndUpdate(
-        { _id: addressId, user: userId },
-        { address: req.body.address },
-        { new: true }
-      );
-  
-      if (!updatedAddress) {
-        return res.status(404).json({ message: 'Address not found or unauthorized.' });
+      if (!userAddress) {
+        return res.json({ address: "" });
       }
   
-      res.json({ message: 'Address updated successfully', address: updatedAddress });
+      res.json({ address: userAddress });
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
     }
-  });
+});
+
+router.delete('/deleteaddress/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const deletedAddresses = await addressModel.deleteMany({ user: userId });
+
+    if (deletedAddresses.deletedCount === 0) {
+      return res.status(404).json({ message: 'No addresses found for the specified user.' });
+    }
+
+    res.json({ message: 'Addresses deleted successfully', deletedCount: deletedAddresses.deletedCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 // Route to add an order
 router.post('/addorder', async (req, res) => {

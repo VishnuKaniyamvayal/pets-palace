@@ -18,7 +18,7 @@ const Searchpage = () => {
 
     fetchSearch();
   
-  },[])
+  },[id])
 
   const fetchSearch = async() => {
     try
@@ -29,7 +29,6 @@ const Searchpage = () => {
     catch(err){
       console.log(err)
     }
-    
   }
 
 

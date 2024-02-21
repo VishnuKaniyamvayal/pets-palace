@@ -31,7 +31,7 @@ function Homepage(){
       navigate('/login')
     }
 
-    if (user.admin) {
+    if (user && user.admin ) {
       navigate('/admin')
     }
 

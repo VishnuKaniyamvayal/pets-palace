@@ -10,6 +10,7 @@ import Cart from './pages/Cart'
 import Productview from './pages/Productview'
 import AdminView from "./pages/admin/AdminView"
 import AddPet from './pages/admin/AddPet'
+import EditAddress from "./pages/EditAddress"
 function App() {
   return (
     <>
@@ -25,6 +26,7 @@ function App() {
             <Route path='/productview/:id' element={<Productview />} />
             <Route path='/admin' element={<AdminView />} />
             <Route path='/addpet' element={<AddPet />} />
+            <Route path='/addaddress' element={<EditAddress />} />
           </Routes>
         </div>
       </Router>

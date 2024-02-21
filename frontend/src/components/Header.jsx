@@ -28,7 +28,7 @@ function Header() {
     <header className='header'>
       <div className='logo'>
       <img src={Logo} width={50} height={50} fill="#FFBA18" alt="Logo" />
-        <Link to='/'><h3>Paws Palace { user.admin ? "Admin Pannel" :"" }</h3></Link>
+        <Link to='/'><h3>Paws Palace { (user != null) ? ( (user.admin == true) ? "Admin Pannel" :"" ) : "" }</h3></Link>
       </div>
       {user ?
       <div style={{display:"flex",gap:"10px"}}>
