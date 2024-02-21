@@ -16,11 +16,11 @@ router.get('/rawsearch/:searchkeyword', async (req, res) => {
           { petName: { $regex: searchKeyword, $options: 'i' } }, 
           { petType: { $regex: searchKeyword, $options: 'i' } }, 
           { petBreed: { $regex: searchKeyword, $options: 'i' } }, 
-          { petBreed: { $regex: searchKeyword, $options: 'i' } }, 
+          { petPrice: { $regex: searchKeyword, $options: 'i' } }, 
         ],
       });
   
-      res.json({ pets: matchingPets });
+      res.json( matchingPets );
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: 'Internal Server Error' });
@@ -174,6 +174,48 @@ router.get('/featuredCategories', async (req, res) => {
     }
 });
 
+// Route to add a pet to the user's cart
+router.post('/addtocart', async (req, res) => {
+  try {
+    const { userid , petid } = req.body;
+    const quantity = req.body.quantity ? req.body.quantity : 1;
+    // Check if the pet exists
+    const pet = await petModel.findById(petid);
+    if (!pet) {
+      return res.status(404).json({ message: 'Pet not found.' });
+    }
+
+    // Check if the user has an active cart
+    let userCart = await Cart.findOne({ user: userid });
+
+    // If the user doesn't have a cart, create a new one
+    if (!userCart) {
+      userCart = new Cart({
+        user: userid,
+        items: [{ pet: petid, quantity }],
+      });
+    } else {
+      // If the user has a cart, check if the pet is already in the cartS
+      const existingItemIndex = userCart.items.findIndex(item => item.pet.equals(petid));
+
+      if (existingItemIndex !== -1) {
+        // If the pet is already in the cart, update the quantity
+        userCart.items[existingItemIndex].quantity += quantity;
+      } else {
+        // If the pet is not in the cart, add it as a new item
+        userCart.items.push({ pet: petid, quantity });
+      }
+    }
+
+    await userCart.save();
+
+    res.json({ message: 'Pet added to the cart successfully', userCart });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Route to add a new address for the authenticated user
 router.post('/addaddress', async (req, res) => {
     try {
@@ -217,27 +259,127 @@ router.put('/editaddress/:addressId', async (req, res) => {
     }
   });
 
-router.post('/addorder',async (req,res)=>{
-    // code to add order
-})
+// Route to add an order
+router.post('/addorder', async (req, res) => {
+  try {
+    // Extract order details from the request body
+    const { user, pet, rating, quantity, totalPrice, orderStatus } = req.body;
 
-router.get('/getallorder',async (req,res)=>{
-    // code to add order
-})
-router.put('/cancelorder/:id',async (req,res)=>{
-    // code to edit order
-})
+    // Create a new order
+    const newOrder = new order({
+      user,
+      pet,
+      rating,
+      quantity,
+      totalPrice,
+      orderStatus,
+    });
 
-router.post('/addcommentpet/:userid/:petid',async (req,res)=>{
-    // code to add order
-})
+    // Save the order to the database
+    await newOrder.save();
 
-router.get('/getcomment/:petid',async (req,res)=>{
-    // code to get all comments under pet
-})
-router.delete('/deletecomment/:id',async (req,res)=>{
-    // code to deletecomment
-})
+    res.json({ message: 'Order added successfully', order: newOrder });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+// Route to get all orders by userid
+router.get('/getallorder/:id', async (req, res) => {
+  try {
+    const userid = req.params.id;
+    // Fetch all orders from the database
+    const allOrders = await order.find({
+      user:userid
+    });
+
+    res.json({ allOrders });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Route to cancel an order by ID
+router.put('/cancelorder/:id', async (req, res) => {
+  try {
+    const orderId = req.params.id;
+
+    // Update the order status to 'Cancelled'
+    const cancelledOrder = await order.findByIdAndUpdate(
+      orderId,
+      { orderStatus: 'Cancelled' },
+      { new: true }
+    );
+
+    if (!cancelledOrder) {
+      return res.status(404).json({ message: 'Order not found.' });
+    }
+
+    res.json({ message: 'Order cancelled successfully', order: cancelledOrder });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+// Route to add a comment for a specific pet and user
+router.post('/addcommentpet/:userid/:petid', async (req, res) => {
+  try {
+    const { userid, petid } = req.params;
+    const { comment, rating } = req.body;
+
+    const newComment = new comment({
+      user: userid,
+      pet: petid,
+      comment,
+      rating,
+    });
+
+    await newComment.save();
+
+    res.json({ message: 'Comment added successfully', comment: newComment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Route to get all comments for a specific pet
+router.get('/getcomment/:petid', async (req, res) => {
+  try {
+    const petId = req.params.petid;
+
+    const commentsForPet = await comment.find({ pet: petId });
+
+    res.json({ commentsForPet });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+// Route to delete a comment by ID
+router.delete('/deletecomment/:id', async (req, res) => {
+  try {
+    const commentId = req.params.id;
+
+    const deletedComment = await comment.findByIdAndDelete(commentId);
+
+    if (!deletedComment) {
+      return res.status(404).json({ message: 'Comment not found.' });
+    }
+
+    res.json({ message: 'Comment deleted successfully', comment: deletedComment });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 
 
 

@@ -32,6 +32,7 @@ router.post('/addpet' , upload.any() , async (req, res) => {
     petAge:req.body.petAge,
     petBreed:req.body.petBreed,
     petDesc:req.body.petDesc,
+    petPrice:req.body.petprice,
     petImages:[image.filename]
   })
 
@@ -73,6 +74,7 @@ router.put('/updatepet/:id', upload.any(), async (req, res) => {
     existingPet.petAge = req.body.petAge || existingPet.petAge;
     existingPet.petBreed = req.body.petBreed || existingPet.petBreed;
     existingPet.petDesc = req.body.petDesc || existingPet.petDesc;
+    existingPet.petPrice = req.body.petPrice || existingPet.petPrice;
 
     // Update pet photo if a new one is provided
     if (newImage) {

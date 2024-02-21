@@ -26,6 +26,10 @@ const petSchema = mongoose.Schema(
       type: String,
       required: true,
     },
+    petPrice: {
+      type: String,
+      required: true,
+    },
   },
   {
     timestamps: true,

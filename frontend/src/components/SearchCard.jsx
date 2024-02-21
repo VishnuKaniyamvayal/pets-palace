@@ -1,16 +1,36 @@
 import { Button } from '@radix-ui/themes';
+import axios from 'axios';
 import React from 'react';
 import { toast } from 'react-toastify';
 
-const Card = ({ pet }) => {
+const Card = ({ pet , userid }) => {
+
+  const petid = pet._id
+  const addToCart = async() =>{
+    try{
+      const response = await axios.post( process.env.REACT_APP_DEV_BASE_URL + "api/buyer/addtocart",{
+          userid,
+          petid
+      })
+      if(response.status == 200 )
+      {
+        toast.success("Added to cart")
+      }
+    }
+    catch(err){
+      console.log(err)
+    }
+    
+  }
+
   return (
-    <div style={styles.card}>
-      <img src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRGs22Ni8UwHVtdPUErmVQst-xfxF5yK3jPW0uEYZ25nw&s"} alt={pet.name} style={styles.image} />
+    <div style={styles.card} >
+      <img src={process.env.REACT_APP_DEV_BASE_URL + "uploads/" + pet.petImages[0]} alt={pet.name} style={styles.image} />
       <div style={styles.cardBody}>
-        <h3 style={styles.petName}>{pet.name}</h3>
-        <p style={styles.petBreed}>{pet.breed}</p>
-        <p style={styles.petPrice}>Price: ${pet.price}</p>
-        <Button onClick={() => {addToCart(pet)}}>
+        <h3 style={styles.petName}>{pet.petName}</h3>
+        <p style={styles.petBreed}>{pet.petBreed}</p>
+        <p style={styles.petPrice}>Price: ₹ {pet.petPrice} </p>
+        <Button onClick={() => {addToCart( pet._id , userid )}}>
           Add to Cart
         </Button>
       </div>
@@ -20,7 +40,7 @@ const Card = ({ pet }) => {
 
 const addToCart = (pet) => {
   // Implement your logic to add the pet to the cart
-  toast.success(pet.name + " added to cart")
+  toast.success(pet.petName + " added to cart")
 };
 
 const styles = {

@@ -16,27 +16,15 @@ const cartSchema = new mongoose.Schema(
         },
         quantity: {
           type: Number,
-          required: true,
           default: 1,
+          max:4
         },
       },
     ],
-    totalAmount: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-    status: {
-      type: String,
-      enum: ['Active', 'Completed'],
-      default: 'Active',
-    },
   },
   {
     timestamps: true,
   }
 );
 
-const Cart = mongoose.model('Cart', cartSchema);
-
-module.exports = Cart;
+module.exports = mongoose.model('Cart', cartSchema)
