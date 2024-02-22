@@ -216,6 +216,23 @@ router.post('/addtocart', async (req, res) => {
   }
 });
 
+router.delete('/deletecart/:userId', async (req, res) => {
+  try {
+    const userId = req.params.userId;
+
+    const deletedCart = await Cart.deleteMany({ user: userId });
+
+    if (deletedCart.deletedCount === 0) {
+      return res.status(404).json({ message: 'No cartitems found for the specified user.' });
+    }
+
+    res.status(200).json({ message: 'items in cart deleted successfully', deletedCount: deletedCart.deletedCount });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 // Route to add a new address for the authenticated user
 router.post('/addaddress', async (req, res) => {
     try {
@@ -276,25 +293,36 @@ router.delete('/deleteaddress/:userId', async (req, res) => {
 router.post('/addorder', async (req, res) => {
   try {
     // Extract order details from the request body
-    const { user, pet, rating, quantity, totalPrice, orderStatus } = req.body;
+    const { userid , items , address , paymentType  } = req.body;
+
+      let subTotal = 0;
+      for(let i = 0 ; i < items.length ; i++)
+      {
+        subTotal += Number(items[i].pet.petPrice) * Number(items[i].quantity);
+      }
+      let Tax = subTotal*0.18;
+      let tax = Tax;
+      subTotal = subTotal;
+      let total = tax + subTotal;
 
     // Create a new order
     const newOrder = new order({
-      user,
-      pet,
-      rating,
-      quantity,
-      totalPrice,
-      orderStatus,
+      user:userid,
+      items,
+      tax,
+      address,
+      subTotal,
+      total,
+      paymentType
     });
 
     // Save the order to the database
     await newOrder.save();
 
-    res.json({ message: 'Order added successfully', order: newOrder });
+    res.status(200).json({ message: 'Order added successfully', order: newOrder });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ error: 'Internal Server Error' });
+    res.status(500).json({ message: 'Internal Server Error' });
   }
 });
 

@@ -51,7 +51,7 @@ const Cart = () => {
     } catch (error) {
       console.log(error)
     }
-  }
+  }       
 
   const calculateTotal = ()=>{
     let subTotal = 0;
@@ -92,10 +92,31 @@ const Cart = () => {
     calculateTotal()
   }
 
-  const placeOrder = ()=>{
+  const placeOrder = async ()=>{
     if(userAddress == "")
     {
       toast.error("Please add address first")
+    }
+    try {
+      const response = await axios.post(process.env.REACT_APP_DEV_BASE_URL + 'api/buyer/addorder',{
+        userid:user._id,
+        items:cartItems,
+        address:userAddress,
+        paymentType: "COD"  //currently setting as static
+      })
+      console.log(response)
+      if(response.status == 200)
+      {
+        toast.success("Order Successfully Placed");
+        await axios.delete(process.env.REACT_APP_DEV_BASE_URL + "api/buyer/deletecart/"+user._id)
+        setCartItems([]);
+      }
+      else
+      {
+        toast.error(response.message)
+      }
+    } catch (error) {
+      console.log(error)
     }
   }
 
@@ -107,7 +128,14 @@ const Cart = () => {
   const navigate = useNavigate()
 
   return (
-    < >
+    <>
+    {
+      (cartItems.length == 0)
+      ?
+      <Text style={{ margin: "11px" }} weight="bold">No Items in Cart</Text>
+      :
+      
+    <>
       <Text style={{ margin: "11px" }} weight="bold">Your Cart ( {cartItems.length} ) Items</Text>
       <Grid columns={{ initial: "1", md: '3' }} gap="3">
         {/* cards */}
@@ -123,7 +151,7 @@ const Cart = () => {
                             size="3"
                             src={item.pet.petImages[0]}
                             fallback="T"
-                        />
+                            />
                         <Box>
                             <Text as="div" size="2" weight="bold">
                                 {item.pet.petName}
@@ -156,12 +184,12 @@ const Cart = () => {
             <Flex gap="3" direction="column">
               <Text as="label" weight={"light"} size="6">
                 <Flex gap="2">
-                  <RadioGroup.Item value="1" /> Cash on Delivery
+                  <RadioGroup.Item checked value="COD" /> Cash on Delivery
                 </Flex>
               </Text>
               <Text as="label" size="6">
                 <Flex gap="2" onClick={()=>{toast.error("Online payment Currently not available")}}>
-                  <RadioGroup.Item value="2" disabled /> Online Payment
+                  <RadioGroup.Item value="OnlinePayment" disabled /> Online Payment (Not available for this order)
                 </Flex>
               </Text>
             </Flex>
@@ -210,6 +238,8 @@ const Cart = () => {
           </Flex>
         </Flex>
       </Grid>
+    </>
+  }
     </>
   );
 };
