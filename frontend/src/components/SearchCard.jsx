@@ -1,11 +1,13 @@
 import { Button } from '@radix-ui/themes';
 import axios from 'axios';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 
 const Card = ({ pet , userid }) => {
 
   const petid = pet._id
+  const navigate = useNavigate();
   const addToCart = async() =>{
     try{
       const response = await axios.post( process.env.REACT_APP_DEV_BASE_URL + "api/buyer/addtocart",{
@@ -24,8 +26,8 @@ const Card = ({ pet , userid }) => {
   }
 
   return (
-    <div style={styles.card} >
-      <img src={process.env.REACT_APP_DEV_BASE_URL + "uploads/" + pet.petImages[0]} alt={pet.name} style={styles.image} />
+    <div style={styles.card }>
+      <img src={process.env.REACT_APP_DEV_BASE_URL + "uploads/" + pet.petImages[0]} alt={pet.name} style={styles.image} onClick={()=>{navigate("/productview/"+petid)}}/>
       <div style={styles.cardBody}>
         <h3 style={styles.petName}>{pet.petName}</h3>
         <p style={styles.petBreed}>{pet.petBreed}</p>
@@ -36,11 +38,6 @@ const Card = ({ pet , userid }) => {
       </div>
     </div>
   );
-};
-
-const addToCart = (pet) => {
-  // Implement your logic to add the pet to the cart
-  toast.success(pet.petName + " added to cart")
 };
 
 const styles = {
@@ -57,6 +54,7 @@ const styles = {
     '&:hover': {
       transform: 'scale(1.05)',
     },
+    cursor:"pointer"
   },
   image: {
     width: '100%',

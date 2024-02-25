@@ -11,6 +11,7 @@ import Productview from './pages/Productview'
 import AdminView from "./pages/admin/AdminView"
 import AddPet from './pages/admin/AddPet'
 import EditAddress from "./pages/EditAddress"
+import Orders from './pages/Orders'
 function App() {
   return (
     <>
@@ -27,6 +28,7 @@ function App() {
             <Route path='/admin' element={<AdminView />} />
             <Route path='/addpet' element={<AddPet />} />
             <Route path='/addaddress' element={<EditAddress />} />
+            <Route path='/orders' element={<Orders />} />
           </Routes>
         </div>
       </Router>

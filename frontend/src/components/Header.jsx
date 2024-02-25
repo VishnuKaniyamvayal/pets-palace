@@ -56,7 +56,7 @@ function Header() {
             <a href="/cart">Cart</a>
           </li>
           <li>
-            <a href="/profile">Profile</a>
+            <a href="/orders">Orders</a>
           </li>
           <li>
               <Button  onClick={onLogout}>Logout</Button>

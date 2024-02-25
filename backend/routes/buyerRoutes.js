@@ -254,6 +254,25 @@ router.post('/addaddress', async (req, res) => {
     }
   });
 
+  // Route to get pet data by pet ID
+router.get('/pets/:petId', async (req, res) => {
+  try {
+    const { petId } = req.params;
+
+    // Find the pet by ID
+    const pet = await petModel.findById(petId);
+
+    if (!pet) {
+      return res.status(404).json({ message: 'Pet not found.' });
+    }
+
+    res.json({ pet });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
 router.get('/getaddress/:userid', async (req, res) => {
     try {
       const userId = req.params.userid;
@@ -333,7 +352,7 @@ router.get('/getallorder/:id', async (req, res) => {
     const userid = req.params.id;
     // Fetch all orders from the database
     const allOrders = await order.find({
-      user:userid
+      user:userid,
     });
 
     res.json({ allOrders });
@@ -368,16 +387,17 @@ router.put('/cancelorder/:id', async (req, res) => {
 
 
 // Route to add a comment for a specific pet and user
-router.post('/addcommentpet/:userid/:petid', async (req, res) => {
+router.post('/addcommentpet', async (req, res) => {
   try {
-    const { userid, petid } = req.params;
-    const { comment, rating } = req.body;
+    const {  rating , userid , petid } = req.body;
+
+    const commenttext = req.body.comment
 
     const newComment = new comment({
       user: userid,
       pet: petid,
-      comment,
-      rating,
+      comment:commenttext,
+      rating:rating,
     });
 
     await newComment.save();
@@ -394,10 +414,13 @@ router.get('/getcomment/:petid', async (req, res) => {
   try {
     const petId = req.params.petid;
 
-    const commentsForPet = await comment.find({ pet: petId });
+    const commentsForPet = await comment.find({ pet: petId }).populate({
+      path: 'user',
+      select: 'name', // Exclude any confidential fields from the user data
+    });
 
     res.json({ commentsForPet });
-  } catch (error) {
+  }catch(error){
     console.error(error);
     res.status(500).json({ error: 'Internal Server Error' });
   }

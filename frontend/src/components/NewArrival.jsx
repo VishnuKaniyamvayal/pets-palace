@@ -1,14 +1,17 @@
 import { Button } from '@radix-ui/themes';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const NewArrival = () => {
+
+    const navigate = useNavigate();
     
     const imageUrl = "https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-1490908.jpg&fm=jpg";
 
     const newProducts = [
-        { id: 1, name: 'Cozy Pet Bed', imageUrl },
-        { id: 2, name: 'Interactive Cat Toy', imageUrl },
-        { id: 3, name: 'Durable Dog Chew', imageUrl },
+        { _id: 1, name: 'Cozy Pet Bed', imageUrl },
+        { _id: 2, name: 'Interactive Cat Toy', imageUrl },
+        { _id: 3, name: 'Durable Dog Chew', imageUrl },
         // Add more new arrivals as needed
     ];
 
@@ -53,10 +56,9 @@ const NewArrival = () => {
             <h2 style={headingStyle}>New Comers</h2>
             <div style={productGridStyle}>
                 {newProducts.map(product => (
-                    <div style={productStyle} key={product.id}>
+                    <div style={productStyle} key={product.id} onClick={()=>{navigate("productview/"+product._id)}}>
                         <img src={product.imageUrl} alt={product.name} style={imageStyle} />
                         <p>{product.name}</p>
-
                         <Button
                         style={buttonStyle}
                         >Add to cart</Button>
