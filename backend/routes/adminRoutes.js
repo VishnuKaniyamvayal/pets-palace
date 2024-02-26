@@ -82,7 +82,6 @@ router.put('/updatepet/:id', upload.any(), async (req, res) => {
     if (newImage) {
       existingPet.petImages = [newImage.filename];
     }
-    console.log(newImage)
 
     // Save the updated pet
     const updatedPet = await existingPet.save();
@@ -144,9 +143,27 @@ router.delete('/deletepet/:petId', async (req, res) => {
 // Endpoint to get all orders
 router.get('/orders', async (req, res) => {
   try {
-    const orders = await order.find().populate('user','-password');
+    const orders = await order.find().populate('user','-password').populate("address");
 
     res.json({ success: true, orders });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to get all orders
+router.post('/updateorderstatus', async (req, res) => {
+  try {
+    const updatedOrder = await order.findByIdAndUpdate(
+      req.body.orderid,
+      { orderStatus: req.body.status },
+      { new: true }
+    );
+    if (!updatedOrder) {
+      return res.status(404).json({ message: 'Order not found.' });
+    }
+    res.json({ success: true, updatedOrder });
   } catch (error) {
     console.error(error);
     res.status(500).json({ success: false, error: 'Internal Server Error' });

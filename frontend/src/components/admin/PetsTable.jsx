@@ -2,10 +2,13 @@ import { Button, Table } from '@radix-ui/themes'
 import React, { useEffect, useState } from 'react'
 import axios from "axios"
 import { toast } from "react-toastify"
+import { useNavigate } from 'react-router-dom'
 
 const PetsTable = () => {
 
     const [allpets, setAllPets] = useState([]);
+
+    const navigate = useNavigate();
 
     const fetchAllPets = async () => {
         const res = await axios.get(process.env.REACT_APP_DEV_BASE_URL + "api/admin/getallpet");
@@ -49,7 +52,7 @@ const PetsTable = () => {
                                 <Table.Cell>{pet.petAge}</Table.Cell>
                                 <Table.Cell>{pet.petPrice}</Table.Cell>
                                 <Table.Cell>{pet.petDesc}</Table.Cell>
-                                <Table.Cell><Button color='red' onClick={()=>{if(window.confirm("Are you sure to remove this pet")){removePet(pet._id)}}}>Remove</Button>  <Button color='blue'>Edit</Button></Table.Cell>
+                                <Table.Cell><Button color='red' onClick={()=>{if(window.confirm("Are you sure to remove this pet")){removePet(pet._id)}}}>Remove</Button>  <Button color='blue' onClick={()=>{navigate("/editpet/"+pet._id)}}>Edit</Button></Table.Cell>
                             </Table.Row>
                         ))
                     }

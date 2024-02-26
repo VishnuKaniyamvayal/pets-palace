@@ -33,8 +33,9 @@ const OrdersSchema = mongoose.Schema(
         default: 'Pending',
     },
     address: {
-      type: String,
-      required:true
+      type: mongoose.Schema.Types.ObjectId,
+      required:true,
+      ref:"address"
       },
   },
   {

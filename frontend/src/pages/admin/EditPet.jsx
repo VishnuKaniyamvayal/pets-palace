@@ -2,18 +2,20 @@ import React, { useEffect, useState } from 'react';
 import { Button, Flex, Text, TextArea, TextField } from '@radix-ui/themes';
 import axios from 'axios';
 import { toast } from 'react-toastify';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import  { useSelector } from "react-redux"
 
 
-const AddPet = () => {
+const EditPet = () => {
   const [petName, setPetName] = useState('');
   const [petType, setPetType] = useState('');
   const [petAge, setPetAge] = useState('');
   const [petImage, setPetImage] = useState([]);
   const [petBreed, setPetBreed] = useState('');
-  const [petDesc, setPetDesc] = useState('Enter pet description');
+  const [petDesc, setPetDesc] = useState('');
   const [petPrice, setPetPrice] = useState('');
+  
+  const { id } = useParams();
 
   const { user } = useSelector((state) => state.auth)
 
@@ -22,6 +24,17 @@ const AddPet = () => {
   const handleImageChange = (e) => {
     const imageFile = e.target.files[0];
     setPetImage(imageFile);
+  };
+
+  const getPetDetails = async()=>{
+    const res = await axios.get(process.env.REACT_APP_DEV_BASE_URL + "api/admin/getpetbyid/"+ id);
+    setPetName(res.data.petName);
+    setPetType(res.data.petType);
+    setPetAge(res.data.petAge);
+    setPetBreed(res.data.petBreed);
+    setPetPrice(res.data.petPrice);
+    setPetDesc(res.data.petDesc);
+    setPetImage(res.data.petImages);
   };
 
   const handleSubmit =async (e) => {
@@ -40,27 +53,20 @@ const AddPet = () => {
       formData.append("petDesc",petDesc);
       formData.append("petPrice",petPrice);
       try {
-        const response = await axios.post(process.env.REACT_APP_DEV_BASE_URL + 'api/admin/addpet',  formData ,{
+        const response = await axios.put(process.env.REACT_APP_DEV_BASE_URL + 'api/admin/updatepet/' + id ,  formData , {
           headers: {
             'Content-Type': 'multipart/form-data'
           }
         });
-        console.log(response)
         if (response.status === 200) {
-          // Pet added successfully
-          console.log('Pet added successfull');
+          toast.success('Pet Updated successfull');
+          navigate("/admin")
         } else {
-          console.error('Failed to add pet.');
+          console.error('Failed to update pet.');
         }
       } catch (error) {
-        console.error('Error adding pet:', error);
+        console.error('Error updating pet:', error);
       }
-      setPetAge("")
-      setPetBreed("")
-      setPetImage("")
-      setPetName("")
-      setPetType("")
-      setPetPrice("")
     }
  };
 
@@ -69,11 +75,12 @@ const AddPet = () => {
   {
     navigate("/")
   }
- })
+  getPetDetails();
+ },[])
 
   return (
     <Flex direction="column" gap="3" style={{ maxWidth: 400 ,marginLeft:"auto",marginRight:"auto"}}>
-      <Text size={"6"} weight={"medium"}>Add Pet</Text>
+      <Text size={"6"} weight={"medium"}>Edit Pet</Text>
       <TextField.Root>
         <TextField.Input
           placeholder="Pet Name"
@@ -139,4 +146,4 @@ const AddPet = () => {
   );
 };
 
-export default AddPet;
+export default EditPet;
