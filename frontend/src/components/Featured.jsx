@@ -1,20 +1,27 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 const FeaturedCategories = () => {
-  const categories = [
-    { id: 1, name: 'Dog ', image: 'https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-1490908.jpg&fm=jpg' },
-    { id: 2, name: 'Cat ', image: 'https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-1490908.jpg&fm=jpg' },
-    { id: 3, name: 'Beaver', image: 'https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-1490908.jpg&fm=jpg' },
-  ];
+
+  const [ data , setData ] = useState([]);
+
+  const getData = async()=>{
+      const res = await axios.get(process.env.REACT_APP_DEV_BASE_URL + "api/buyer/featuredCategories")
+      setData(res.data.featuredCategories);
+  }
+
+  useEffect(()=>{
+    getData();
+  },[])
 
   return (
     <div style={styles.container}>
       <h2 style={styles.title}>Featured Categories</h2>
       <div style={styles.categoryContainer}>
-        {categories.map((category) => (
-          <div key={category.id} style={styles.category}>
-            <img src={category.image} alt={category.name} style={styles.image} />
-            <p style={styles.categoryName}>{category.name}</p>
+        {data.map((category) => (
+          <div key={category._id} style={styles.category}>
+            <img src={process.env.REACT_APP_DEV_BASE_URL + "uploads/" + category.image} alt={category.category} style={styles.image} />
+            <p style={styles.categoryName}>{category.category}</p>
           </div>
         ))}
       </div>

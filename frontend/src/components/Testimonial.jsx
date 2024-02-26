@@ -1,6 +1,19 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 const Testimonials = () => {
+
+    const [ data , setData ] = useState([]);
+
+    const getData = async()=>{
+        const res = await axios.get(process.env.REACT_APP_DEV_BASE_URL + "api/buyer/testmonials")
+        setData(res.data.bestLatestComment);
+    }
+    
+    useEffect(()=>{
+      getData();
+    },[])
+
 
     const imageUrl = "https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-1490908.jpg&fm=jpg";
 
@@ -54,12 +67,12 @@ const Testimonials = () => {
         <div style={testimonialsStyle}>
             <h2 style={headingStyle}>Testimonials</h2>
             <div style={testimonialListStyle}>
-                {testimonials.map(testimonial => (
-                    <div style={testimonialStyle} key={testimonial.id}>
-                        <img src={testimonial.imageUrl} alt={testimonial.petName} style={imageStyle} />
-                        <p style={ownerNameStyle}>{testimonial.ownerName}</p>
-                        <p>{testimonial.petName}</p>
-                        <p style={reviewStyle}>{testimonial.review}</p>
+                {data.map(testimonial => (
+                    <div style={testimonialStyle} key={testimonial._id}>
+                        <img src={process.env.REACT_APP_DEV_BASE_URL + "uploads/" + testimonial.petDetails[0].petImages[0].ImageName} alt={testimonial.petName} style={imageStyle} />
+                        <p style={ownerNameStyle}>{testimonial.userDetails[0].name}</p>
+                        <p>{testimonial.petDetails[0].petName}</p>
+                        <p style={reviewStyle}>{testimonial.latestComment.comment}</p>
                     </div>
                 ))}
             </div>

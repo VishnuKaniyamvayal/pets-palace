@@ -65,41 +65,31 @@ router.get('/featuredCategories', async (req, res) => {
     }
   });
 
-  router.get('/bestSellers', async (req, res) => {
+  router.get('/bestsellers', async (req, res) => {
     try {
-      // Aggregate orders to find the best-selling pets
-      const bestSellers = await order.aggregate([
-        {
-          $group: {
-            _id: '$pet',
-            totalOrders: { $sum: '$quantity' },
-          },
-        },
+      const petsWithRatings = await petModel.aggregate([
         {
           $lookup: {
-            from: 'pets', // Assuming your Pets model is named 'Pets'
+            from: 'comments',
             localField: '_id',
-            foreignField: '_id',
-            as: 'petDetails',
+            foreignField: 'pet',
+            as: 'comments',
           },
         },
         {
-          $match: {
-            'petDetails': { $exists: true, $ne: [] }, // Exclude pets without orders
+          $addFields: {
+            averageRating: { $avg: '$comments.rating' },
           },
         },
         {
-          $sort: { totalOrders: -1 },
+          $sort: { averageRating: -1 },
         },
-        {
-          $limit: 5, // Retrieve the top 5 best-selling pets
-        },
-      ]);
+      ]).limit(5);
   
-      res.json({ bestSellers });
+      res.json({ success: true, petsWithRatings });
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: 'Internal Server Error' });
+      res.status(500).json({ success: false, error: 'Internal Server Error' });
     }
   });
   
@@ -119,10 +109,18 @@ router.get('/featuredCategories', async (req, res) => {
         },
         {
           $lookup: {
-            from: 'pets', // Assuming your Pets model is named 'Pets'
+            from: 'pets',
             localField: '_id',
             foreignField: '_id',
             as: 'petDetails',
+          },
+        },
+        {
+          $lookup: {
+            from: 'users', 
+            localField: 'latestComment.user',
+            foreignField: '_id',
+            as: 'userDetails',
           },
         },
         {

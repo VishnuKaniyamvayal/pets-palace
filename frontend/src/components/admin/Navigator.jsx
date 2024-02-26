@@ -3,8 +3,12 @@ import React from 'react'
 import Analytics from './Analytics'
 import OrdersTable from './OrdersTable'
 import PetsTable from './PetsTable'
+import { useNavigate } from 'react-router-dom'
 
 const Navigator = () => {
+
+    const navigate = useNavigate();
+
     return (
         <div style={{marginTop:"-50px"}}>
             <Tabs.Root defaultValue="pets">
@@ -18,7 +22,7 @@ const Navigator = () => {
                     
                     <Tabs.Content value="pets">
                         <Flex justify={"end"}>
-                        <Button style={{margin:"10px" }}>Add pet</Button>
+                        <Button style={{margin:"10px" }} onClick = {()=>{navigate('/addpet')}}> Add pet</Button>
                         </Flex>
                         <PetsTable/>
                     </Tabs.Content>

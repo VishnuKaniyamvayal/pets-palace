@@ -1,8 +1,9 @@
 import React, { useState } from 'react';
-import { Button, Flex, TextArea, TextField } from '@radix-ui/themes';
+import { Button, Flex, Text, TextArea, TextField } from '@radix-ui/themes';
 import axios from 'axios';
-import { useDispatch } from 'react-redux';
 import { toast } from 'react-toastify';
+import { useNavigate } from 'react-router-dom';
+import  { useSelector } from "react-redux"
 
 
 const AddPet = () => {
@@ -11,8 +12,12 @@ const AddPet = () => {
   const [petAge, setPetAge] = useState('');
   const [petImage, setPetImage] = useState([]);
   const [petBreed, setPetBreed] = useState('');
-  const [petDesc, setPetDesc] = useState('');
+  const [petDesc, setPetDesc] = useState('Enter pet description');
   const [petPrice, setPetPrice] = useState('');
+
+  const { user } = useSelector((state) => state.auth)
+
+  const navigate = useNavigate();
 
   const handleImageChange = (e) => {
     const imageFile = e.target.files[0];
@@ -59,8 +64,16 @@ const AddPet = () => {
     }
  };
 
+ useState(()=>{
+  if(user && user.admin == null)
+  {
+    navigate("/")
+  }
+ })
+
   return (
-    <Flex direction="column" gap="3" style={{ maxWidth: 400 }}>
+    <Flex direction="column" gap="3" style={{ maxWidth: 400 ,marginLeft:"auto",marginRight:"auto"}}>
+      <Text size={"6"} weight={"medium"}>Add Pet</Text>
       <TextField.Root>
         <TextField.Input
           placeholder="Pet Name"

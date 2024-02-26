@@ -1,8 +1,21 @@
 import { Button } from '@radix-ui/themes';
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const NewArrival = () => {
+
+    const [ data , setData ] = useState([]);
+
+    const getData = async()=>{
+        const res = await axios.get(process.env.REACT_APP_DEV_BASE_URL + "api/buyer/newcomers")
+        setData(res.data.newcomers);
+    }
+  
+    useEffect(()=>{
+      getData();
+    },[])
+
 
     const navigate = useNavigate();
     
@@ -55,17 +68,16 @@ const NewArrival = () => {
         <div style={newArrivalsStyle}>
             <h2 style={headingStyle}>New Comers</h2>
             <div style={productGridStyle}>
-                {newProducts.map(product => (
-                    <div style={productStyle} key={product.id} onClick={()=>{navigate("productview/"+product._id)}}>
-                        <img src={product.imageUrl} alt={product.name} style={imageStyle} />
-                        <p>{product.name}</p>
+                {data.map(product => (
+                    <div style={productStyle} key={product._id} onClick={()=>{navigate("productview/"+product._id)}}>
+                        <img src={process.env.REACT_APP_DEV_BASE_URL + "uploads/" + product.petImages[0]} alt={product.petName} style={imageStyle} />
+                        <p>{product.petName}</p>
                         <Button
                         style={buttonStyle}
-                        >Add to cart</Button>
+                        >View Product</Button>
                     </div>
                 ))}
             </div>
-            <Button>Shop Now</Button>
         </div>
     );
 };

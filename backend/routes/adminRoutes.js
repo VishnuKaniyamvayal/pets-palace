@@ -2,6 +2,8 @@ const express = require('express')
 const multer  = require("multer")
 const router = express.Router()
 const petModel = require('../models/petModel')
+const comment = require('../models/commentModel')
+const order = require("../models/ordersModel")
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -115,6 +117,40 @@ router.get('/getpetbyid/:id', async (req, res) => {
   }
 });
 
+// Endpoint to delete a pet by ID along with its comments
+router.delete('/deletepet/:petId', async (req, res) => {
+  try {
+    const { petId } = req.params;
 
+    // Check if the pet exists
+    const pet = await petModel.findById(petId);
+    if (!pet) {
+      return res.status(404).json({ message: 'Pet not found.' });
+    }
+
+    // Delete comments associated with the pet
+    await comment.deleteMany({ pet: petId });
+
+    // Delete the pet
+    await petModel.findByIdAndDelete(petId);
+
+    res.json({ success: true, message: 'Pet and associated comments deleted successfully.' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to get all orders
+router.get('/orders', async (req, res) => {
+  try {
+    const orders = await order.find().populate('user','-password');
+
+    res.json({ success: true, orders });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
 
 module.exports = router

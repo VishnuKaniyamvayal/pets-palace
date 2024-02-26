@@ -1,6 +1,19 @@
-import React from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 
 const BestSellers = () => {
+
+    const [ data , setData ] = useState([]);
+
+    const getData = async()=>{
+        const res = await axios.get(process.env.REACT_APP_DEV_BASE_URL + "api/buyer/bestsellers")
+        console.log(res.data.petsWithRatings)
+        setData(res.data.petsWithRatings);
+    }
+  
+    useEffect(()=>{
+      getData();
+    },[])
 
     const imageUrl = "https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-1490908.jpg&fm=jpg";
 
@@ -63,17 +76,19 @@ const BestSellers = () => {
         <div style={bestSellersStyle}>
             <h2 style={headingStyle}>Best Sellers</h2>
             <div style={sellerListStyle}>
-                {bestSellers.map(seller => (
-                    <div style={sellerStyle} key={seller.id}>
-                        <img src={seller.imageUrl}alt={seller.name} style={imageStyle} />
-                        <p className="seller-name">{seller.name}</p>
+                {
+                data.map(pet => (
+                    <div style={sellerStyle} key={pet._id}>
+                        <img src={pet.petImages[0].ImageName}alt={pet.petName} style={imageStyle} />
+                        <p className="seller-name">{pet.petName}</p>
                         <div style={ratingStyle}>
                             <span style={starsStyle}>&#9733;</span>
-                            <span className="rating-number">{seller.rating}</span>
-                            <span style={reviewsStyle}>{seller.reviews} Reviews</span>
+                            <span className="rating-number">{Math.trunc(Number(pet.averageRating))}</span>
+                            <span style={reviewsStyle}> | {pet.comments.length} Reviews</span>
                         </div>
                     </div>
-                ))}
+                ))
+            }
             </div>
         </div>
     );
