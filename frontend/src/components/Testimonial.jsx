@@ -15,14 +15,6 @@ const Testimonials = () => {
     },[])
 
 
-    const imageUrl = "https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-1490908.jpg&fm=jpg";
-
-    const testimonials = [
-        { id: 1, petName: 'Buddy', ownerName: 'Alice', review: 'The pet products here are amazing! Buddy loves them all.', imageUrl },
-        { id: 2, petName: 'Whiskers', ownerName: 'Bob', review: 'Whiskers is the happiest cat ever thanks to these products.', imageUrl },
-        { id: 3, petName: 'Max', ownerName: 'Charlie', review: 'Max favorite treats are from this fantastic pet store!', imageUrl} ,
-        // Add more testimonials as needed
-    ];
 
     const testimonialsStyle = {
         textAlign: 'center',
@@ -49,9 +41,11 @@ const Testimonials = () => {
     };
 
     const imageStyle = {
-        width: '100%',
+        width: '250px',
+        height: '250px',
         borderRadius: '50%',
         marginBottom: '10px',
+        objectFit:"cover"
     };
 
     const ownerNameStyle = {
@@ -67,14 +61,17 @@ const Testimonials = () => {
         <div style={testimonialsStyle}>
             <h2 style={headingStyle}>Testimonials</h2>
             <div style={testimonialListStyle}>
-                {data.map(testimonial => (
+                {data ? data.map(testimonial => (
                     <div style={testimonialStyle} key={testimonial._id}>
-                        <img src={process.env.REACT_APP_DEV_BASE_URL + "uploads/" + testimonial.petDetails[0].petImages[0].ImageName} alt={testimonial.petName} style={imageStyle} />
+                        <img src={process.env.REACT_APP_DEV_BASE_URL + "uploads/" + testimonial.petDetails[0].petImages[0]} alt={testimonial.petName} style={imageStyle} />
                         <p style={ownerNameStyle}>{testimonial.userDetails[0].name}</p>
                         <p>{testimonial.petDetails[0].petName}</p>
                         <p style={reviewStyle}>{testimonial.latestComment.comment}</p>
                     </div>
-                ))}
+                ))
+                :
+                ""
+                }
             </div>
         </div>
     );

@@ -1,66 +1,69 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
-  Radar,
-  RadarChart,
-  PolarGrid,
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
   Legend,
-  PolarAngleAxis,
-  PolarRadiusAxis,
   ResponsiveContainer,
 } from 'recharts';
+import axios from "axios"
 
 const data = [
   {
-    subject: 'Math',
-    A: 120,
-    B: 110,
-    fullMark: 150,
+    breed: 'German Shepherd',
+    quantity: 10,
   },
   {
-    subject: 'Chinese',
-    A: 98,
-    B: 130,
-    fullMark: 150,
+    breed: 'Pomeranian',
+    quantity: 8,
   },
   {
-    subject: 'English',
-    A: 86,
-    B: 130,
-    fullMark: 150,
+    breed: 'Labrador',
+    quantity: 15,
   },
-  {
-    subject: 'Geography',
-    A: 99,
-    B: 100,
-    fullMark: 150,
-  },
-  {
-    subject: 'Physics',
-    A: 85,
-    B: 90,
-    fullMark: 150,
-  },
-  {
-    subject: 'History',
-    A: 65,
-    B: 85,
-    fullMark: 150,
-  },
+  // Add more data as needed
 ];
 
-const TrendGraph = () => {
+const Example = () => {
+
+  const [ data , setData ] = useState([]);
+
+  const fetchData = async()=>{
+    const res = await axios.get(process.env.REACT_APP_DEV_BASE_URL + "api/admin/breedsales");
+    setData(res.data.breedSales);
+  }
+  
+  useEffect(()=>{
+    fetchData();
+  })
+
+
+
   return (
     <ResponsiveContainer width="100%" height="100%">
-      <RadarChart cx="50%" cy="50%" outerRadius="90%" data={data}>
-        <PolarGrid />
-        <PolarAngleAxis dataKey="subject" />
-        <PolarRadiusAxis angle={30} domain={[0, 150]} />
-        <Radar name="Male" dataKey="A" stroke="#8884d8" fill="#8884d8" fillOpacity={0.6} />
-        <Radar name="Female" dataKey="B" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.6} />
+      <BarChart
+        width={500}
+        height={300}
+        data={data}
+        margin={{
+          top: 20,
+          right: 30,
+          left: 20,
+          bottom: 5,
+        }}
+      >
+        <CartesianGrid strokeDasharray="3 3" />
+        <XAxis dataKey="petBreed" />
+        <YAxis yAxisId="left" orientation="left" stroke="#8884d8" />
+        <Tooltip />
         <Legend />
-      </RadarChart>
+        <Bar yAxisId="left" dataKey="quantity" fill="#8884d8" />
+      </BarChart>
     </ResponsiveContainer>
   );
 };
 
-export default TrendGraph;
+export default Example;

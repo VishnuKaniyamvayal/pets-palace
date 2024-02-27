@@ -43,7 +43,7 @@ function Orders() {
   return (
     <>
       <Flex width={"200px"} justify={"start"} direction={"column"} align={"center"} gap="6">
-        {
+        { orders.length != 0 ?
           orders.map((item,index)=>(
       <Card key={index}>
         <Card>
@@ -57,10 +57,14 @@ function Orders() {
             <>
             <Text style={{cursor:"pointer"}}>Total Items( {item.items.length} )</Text>
             </>
+            <Text style={{cursor:"pointer"}}> Status: {item.orderStatus} </Text>
             <>
             {
               item.orderStatus == "Cancelled" ? 
               <Button disabled>Cancelled</Button>
+              :
+              item.orderStatus == "Delivered" ?
+              <Button color="green" disabled>Delivered</Button>
               :
               <Button onClick={()=>{cancelOrder(item._id)}}>Cancel Order</Button>
             }
@@ -97,6 +101,7 @@ function Orders() {
         }
       </Card>
           ))
+          : "No Orders"
         }
       </Flex>
     </>

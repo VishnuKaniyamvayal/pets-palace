@@ -53,6 +53,23 @@ const Productview = () => {
         setAllCommets(res.data.commentsForPet);
     }
 
+    const addToCart = async( userid , petid ) =>{
+        try{
+          const response = await axios.post( process.env.REACT_APP_DEV_BASE_URL + "api/buyer/addtocart",{
+              userid,
+              petid
+          })
+          if(response.status == 200 )
+          {
+            toast.success("Added to cart")
+          }
+        }
+        catch(err){
+          console.log(err)
+        }
+        
+      }
+
     useEffect(()=>{
         fetchData();
     },[])
@@ -65,7 +82,7 @@ const Productview = () => {
         <>
             <Grid columns={{ initial: "1", md: "3" }} gap="3">
                 {/* Product Photo */}
-                <img src={"uploads/"+currentImage} style={{ objectFit: "cover", borderWidth: "3px", borderColor: "gray" }} width="500px" height={"400px"} alt="" />
+                <img src={process.env.REACT_APP_DEV_BASE_URL + "uploads/"+currentImage} style={{ objectFit: "cover", borderWidth: "3px", borderColor: "gray" }} width="500px" height={"400px"} alt="" />
                 {/* Details */}
                 <Flex justify={"start"} direction="column" align={"left"} style={{ paddingLeft: "30px" }}>
                     <Text align={"left"} size="6" >{pet.petName}</Text>
@@ -93,7 +110,7 @@ const Productview = () => {
                     </Flex>
                     <Text size={"2"} color='gray'>Excluding Tax and other Charges</Text>
                     <Flex justify={'center'} align="center" direction={"column"} gap="4" style={{ padding: "10px 0 10px 0" }}>
-                        <Button size={"3"} style={{ width: "300px" }}>Add to cart</Button>
+                        <Button size={"3"} style={{ width: "300px" }} onClick={()=>{addToCart( user._id , pet._id)}}>Add to cart</Button>
                         <Button size={"3"} style={{ width: "300px" }} variant="soft">Add to wishlist</Button>
                     </Flex>
                     <Flex grow={"1"} justify={'end'} align="baseline" direction={"column"} gap="4" style={{ padding: "10px 0 10px 0" }}>
@@ -106,7 +123,7 @@ const Productview = () => {
             <Flex justify={"start"} align="center" direction={"row"} gap="6" style={{margin: "20px 0 10px 0"}}>
             {
                 images.map(( imageUrl , index )=>
-                    <img onClick={()=>{setCurrentImage(imageUrl)}}  style={{objectFit:"cover" , borderRadius: "10px"}} width={"100px"} height="100px" key={ index } src={imageUrl} alt="PRODUCT IMAGE"/>
+                    <img onClick={()=>{setCurrentImage(imageUrl)}}  style={{objectFit:"cover" , borderRadius: "10px"}} width={"100px"} height="100px" key={ index } src={process.env.REACT_APP_DEV_BASE_URL + "uploads/" + imageUrl} alt="PRODUCT IMAGE"/>
                 )
             }
             </Flex>

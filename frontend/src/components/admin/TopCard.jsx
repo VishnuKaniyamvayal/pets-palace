@@ -1,17 +1,17 @@
 import { Box, Card, Flex, Text } from '@radix-ui/themes'
 import React from 'react'
 
-const TopCard = ({ data }) => {
+const TopCard = ({ title , value }) => {
     return (
         <>
             <Card size="3" style={{ width: 300 }}>
                 <Flex gap="4" align="center">
                     <Box>
                         <Text as="div" size="4" weight="bold">
-                            { data.title }
+                            { title }
                         </Text>
                         <Text as="div" size="4" color="gray">
-                            { data.value }
+                            { value }
                         </Text>
                     </Box>
                 </Flex>

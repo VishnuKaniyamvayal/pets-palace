@@ -48,9 +48,9 @@ const AddPet = () => {
         console.log(response)
         if (response.status === 200) {
           // Pet added successfully
-          console.log('Pet added successfull');
+          toast.success('Pet added successfull');
         } else {
-          console.error('Failed to add pet.');
+          toast.error('Failed to add pet.');
         }
       } catch (error) {
         console.error('Error adding pet:', error);
@@ -61,6 +61,7 @@ const AddPet = () => {
       setPetName("")
       setPetType("")
       setPetPrice("")
+      setPetDesc("")
     }
  };
 

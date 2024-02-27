@@ -5,13 +5,13 @@ import { logout, reset } from '../features/auth/authSlice'
 import Logo from "../icons/paw-solid.svg"
 import { Button, Text } from '@radix-ui/themes'
 import { TextField } from '@radix-ui/themes'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 function Header() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
   const { user } = useSelector((state) => state.auth)
-
+  
   const [search, setSearch] = useState();
 
   const onLogout = () => {
@@ -30,7 +30,7 @@ function Header() {
         <img src={Logo} width={50} height={50} fill="#FFBA18" alt="Logo" />
         <Link to='/'><h3>Paws Palace {(user != null) ? ((user.admin == true) ? "Admin Pannel" : "") : ""}</h3></Link>
       </div>
-      {user && user.admin == null ?
+      {user && user.admin != true ?
         <div style={{ display: "flex", gap: "10px" }}>
           <TextField.Root style={{ width: 300 }} radius='full'>
             <TextField.Slot>
@@ -53,7 +53,7 @@ function Header() {
               <Text>Hi {user.name}</Text>
             </li>
             {
-              user.admin == null ?
+              user.admin != true ?
                 <>
                   <li>
                     <a href="/cart">Cart</a>

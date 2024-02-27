@@ -29,8 +29,10 @@ router.get('/rawsearch/:searchkeyword', async (req, res) => {
 
 router.get('/featuredCategories', async (req, res) => {
     try {
-      // Use Mongoose distinct to get unique values for the petBreed field
-      const featuredCategories = await petModel.distinct('petBreed');
+
+      const allCategories = await petModel.distinct('petBreed',{ limit: 4 });
+
+      const featuredCategories = allCategories.slice(0, 3);
   
       // Choose any image from the petImages field of the first document in each category
       const categoryImages = await Promise.all(
@@ -129,7 +131,7 @@ router.get('/featuredCategories', async (req, res) => {
           },
         },
         {
-          $limit: 5, // Retrieve the top 5 best latest comments
+          $limit: 3,
         },
       ]);
   

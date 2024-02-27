@@ -140,7 +140,7 @@ const EditPet = () => {
       <Button
         onClick={handleSubmit}
       >
-        Add Pet
+        Update Pet
       </Button>
     </Flex>
   );

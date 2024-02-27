@@ -18,15 +18,6 @@ const NewArrival = () => {
 
 
     const navigate = useNavigate();
-    
-    const imageUrl = "https://images.pexels.com/photos/1490908/pexels-photo-1490908.jpeg?cs=srgb&dl=pexels-svetozar-milashevich-1490908.jpg&fm=jpg";
-
-    const newProducts = [
-        { _id: 1, name: 'Cozy Pet Bed', imageUrl },
-        { _id: 2, name: 'Interactive Cat Toy', imageUrl },
-        { _id: 3, name: 'Durable Dog Chew', imageUrl },
-        // Add more new arrivals as needed
-    ];
 
     const newArrivalsStyle = {
         textAlign: 'center',
@@ -56,6 +47,9 @@ const NewArrival = () => {
         width: '100%', // Adjusted width to make the image responsive within the grid cell
         borderRadius: '10px',
         marginBottom: '10px',
+        height:"200px",
+        width:"200px",
+        objectFit:"cover"
     };
 
     const buttonStyle = {

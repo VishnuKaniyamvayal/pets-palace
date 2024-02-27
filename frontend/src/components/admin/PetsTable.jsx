@@ -38,7 +38,7 @@ const PetsTable = () => {
                         <Table.ColumnHeaderCell>Breed </Table.ColumnHeaderCell>
                         <Table.ColumnHeaderCell>Age</Table.ColumnHeaderCell>
                         <Table.ColumnHeaderCell>Price</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>Description</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell style={{maxWidth:"200px"}}>Description</Table.ColumnHeaderCell>
                         <Table.ColumnHeaderCell>Action</Table.ColumnHeaderCell>
                     </Table.Row>
                 </Table.Header>
@@ -51,7 +51,7 @@ const PetsTable = () => {
                                 <Table.Cell>{pet.petBreed}</Table.Cell>
                                 <Table.Cell>{pet.petAge}</Table.Cell>
                                 <Table.Cell>{pet.petPrice}</Table.Cell>
-                                <Table.Cell>{pet.petDesc}</Table.Cell>
+                                <Table.Cell style={{maxWidth:"200px"}}>{pet.petDesc}</Table.Cell>
                                 <Table.Cell><Button color='red' onClick={()=>{if(window.confirm("Are you sure to remove this pet")){removePet(pet._id)}}}>Remove</Button>  <Button color='blue' onClick={()=>{navigate("/editpet/"+pet._id)}}>Edit</Button></Table.Cell>
                             </Table.Row>
                         ))

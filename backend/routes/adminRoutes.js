@@ -1,9 +1,10 @@
 const express = require('express')
-const multer  = require("multer")
+const multer = require("multer")
 const router = express.Router()
 const petModel = require('../models/petModel')
 const comment = require('../models/commentModel')
 const order = require("../models/ordersModel")
+const ordersModel = require('../models/ordersModel')
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -20,8 +21,8 @@ const storage = multer.diskStorage({
 const upload = multer({ storage });
 
 
-router.post('/addpet' , upload.any() , async (req, res) => {
-  
+router.post('/addpet', upload.any(), async (req, res) => {
+
   const image = req.files[0];
 
   if (!image) {
@@ -29,13 +30,13 @@ router.post('/addpet' , upload.any() , async (req, res) => {
   }
 
   const pet = await petModel.create({
-    petName:req.body.petName,
-    petType:req.body.petType,
-    petAge:req.body.petAge,
-    petBreed:req.body.petBreed,
-    petDesc:req.body.petDesc,
-    petPrice:req.body.petPrice,
-    petImages:[image.filename]
+    petName: req.body.petName,
+    petType: req.body.petType,
+    petAge: req.body.petAge,
+    petBreed: req.body.petBreed,
+    petDesc: req.body.petDesc,
+    petPrice: req.body.petPrice,
+    petImages: [image.filename]
   })
 
   res.status(200).json(pet)
@@ -59,10 +60,10 @@ router.delete('/removepet/:id', async (req, res) => {
 router.put('/updatepet/:id', upload.any(), async (req, res) => {
   try {
     const petId = req.params.id;
-    
+
     // Check if there's a new photo
     const newImage = req.files[0];
-    
+
     // Find the pet by ID
     const existingPet = await petModel.findById(petId);
 
@@ -88,7 +89,7 @@ router.put('/updatepet/:id', upload.any(), async (req, res) => {
 
     res.status(200).json(updatedPet);
   } catch (error) {
-    res.status(500).json({ error , msg:'Internal Server Error' });
+    res.status(500).json({ error, msg: 'Internal Server Error' });
   }
 });
 
@@ -143,7 +144,7 @@ router.delete('/deletepet/:petId', async (req, res) => {
 // Endpoint to get all orders
 router.get('/orders', async (req, res) => {
   try {
-    const orders = await order.find().populate('user','-password').populate("address");
+    const orders = await order.find().populate('user', '-password').populate("address");
 
     res.json({ success: true, orders });
   } catch (error) {
@@ -153,6 +154,24 @@ router.get('/orders', async (req, res) => {
 });
 
 // Endpoint to get all orders
+router.get('/saleslastweek', async (req, res) => {
+  try {
+    // Calculate the date seven days ago from the current date
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const ordersDelivered = await order.find({ updatedAt: { $gte: sevenDaysAgo }, orderStatus: "Delivered" });
+    const ordersCancelled = await order.find({ updatedAt: { $gte: sevenDaysAgo }, orderStatus: "Cancelled" });
+    const ordersPending = await order.find({ updatedAt: { $gte: sevenDaysAgo }, orderStatus: "Pending" });
+
+    res.json({ ordersPending: ordersPending.length, ordersCancelled: ordersCancelled.length, ordersDelivered: ordersDelivered.length });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
+// Endpoint to update all orders
 router.post('/updateorderstatus', async (req, res) => {
   try {
     const updatedOrder = await order.findByIdAndUpdate(
@@ -169,5 +188,77 @@ router.post('/updateorderstatus', async (req, res) => {
     res.status(500).json({ success: false, error: 'Internal Server Error' });
   }
 });
+
+// Endpoint to get all orders
+router.get('/sales', async (req, res) => {
+  try {
+    // Calculate the date seven days ago from the current date
+    const sevenDaysAgo = new Date();
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
+
+    const salesData = await order.find({ updatedAt: { $gte: sevenDaysAgo } });
+
+    const data = [];
+
+    function addLastSevenDaysSales() {
+      const dailyData = {};
+
+      salesData.forEach(sale => {
+        const saleDate = new Date(sale.createdAt).toISOString().split('T')[0];
+        dailyData[saleDate] = (dailyData[saleDate] || 0) + sale.total;
+      });
+
+      for (let i = 6; i >= 0; i--) {
+        const currentDate = new Date();
+        currentDate.setDate(currentDate.getDate() - i);
+        const currentDateISO = currentDate.toISOString().split('T')[0];
+        data.push({
+          date: currentDateISO,
+          TotalSales: dailyData[currentDateISO] || 0,
+        });
+      }
+    }
+
+    addLastSevenDaysSales();
+
+    res.json({ data });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
+
+
+// Endpoint to get all orders
+router.get('/breedsales', async (req, res) => {
+  try {
+
+    const salesData = await order.find();
+    const breedSales = [];
+    function trackBreedSales() {
+      salesData.forEach(sale => {
+        sale.items.forEach(item => {
+          const petBreed = item.pet.petBreed;
+          const breedIndex = breedSales.findIndex(breed => breed.petBreed === petBreed);
+          if (breedIndex !== -1) {
+            breedSales[breedIndex].quantity += item.quantity;
+          } else {
+            breedSales.push({
+              petBreed: petBreed,
+              quantity: item.quantity
+            });
+          }
+        });
+      });
+    }
+    trackBreedSales();
+    res.json({ breedSales });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Internal Server Error' });
+  }
+});
+
 
 module.exports = router
